@@ -9,7 +9,22 @@ let player_y;
 
 
 window.onkeydown = function(e) {
-  console.log(e);
+  const SPEED = 2;
+  const RIGHT = 39;
+  const LEFT = 37;
+  let moved = false;
+  if (e.keyCode == RIGHT) {
+    player_x += SPEED;
+    moved = true;
+  } else if (e.keyCode == LEFT) {
+    player_x -= SPEED;
+    moved = true;
+  }
+
+  if (moved) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img_player, player_x, player_y);
+  }
 };
 
 window.onload = function() {
