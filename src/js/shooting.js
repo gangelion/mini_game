@@ -1,6 +1,13 @@
 "use strict"
 
 const ENEMIES = 10;
+const FPS = 30;
+const MSPF = 1000 / FPS;
+const KEYS = new Array(256);
+
+for (let i = 0; i < KEYS.length; i++) {
+  KEYS[i] = false;
+}
 
 let canvas;
 let ctx;
@@ -11,6 +18,37 @@ let player_y;
 let enemies_x = new Array(ENEMIES);
 let enemies_y = new Array(ENEMIES);
 
+let movePlayer = function() {
+  const SPEED = 2;
+  const RIGHT = 39;
+  const LEFT = 37;
+
+  if (KEYS[RIGHT]) {
+    player_x += SPEED;
+  }
+
+  if (KEYS[LEFT]) {
+    player_x -= SPEED;
+  }
+};
+
+let mainloop = function() {
+  let startTime = new Date();
+
+  movePlayer();
+
+  redraw();
+
+  let deltaTime = (new Date()) - startTime;
+  let interval = MSPF - deltaTime;
+
+  if (interval > 0) {
+    setTimeout(mainloop, interval);
+  } else {
+    mainloop();
+  }
+};
+
 let redraw = function() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -19,25 +57,14 @@ let redraw = function() {
   for (let i = 0; i < ENEMIES; i++) {
     ctx.drawImage(img_enemy, enemies_x[i], enemies_y[i]);
   }
-}
-
+};
 
 window.onkeydown = function(e) {
-  const SPEED = 2;
-  const RIGHT = 39;
-  const LEFT = 37;
-  let moved = false;
-  if (e.keyCode == RIGHT) {
-    player_x += SPEED;
-    moved = true;
-  } else if (e.keyCode == LEFT) {
-    player_x -= SPEED;
-    moved = true;
-  }
+  KEYS[e.keyCode] = true;
+};
 
-  if (moved) {
-    redraw();
-  }
+window.onkeyup = function(e) {
+  KEYS[e.keyCode] = false;
 };
 
 window.onload = function() {
@@ -56,6 +83,8 @@ window.onload = function() {
   }
 
   redraw();
+
+  mainloop();
 
 
 };
