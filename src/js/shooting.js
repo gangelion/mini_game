@@ -23,12 +23,31 @@ let movePlayer = function() {
   const RIGHT = 39;
   const LEFT = 37;
 
-  if (KEYS[RIGHT]) {
+  if (KEYS[RIGHT] && player_x + img_player.width < canvas.width) {
     player_x += SPEED;
   }
 
-  if (KEYS[LEFT]) {
+  if (KEYS[LEFT] && player_x > 0) {
     player_x -= SPEED;
+  }
+
+  if (player_x < 0) {
+    player_x = 0;
+  } else if (player_x + img_player.width > canvas.width) {
+    player_x = canvas.width - img_player.width;
+  }
+};
+
+let moveEnemies = function() {
+  const SPEED = 2;
+
+  for (let i = 0; i < ENEMIES; i++) {
+    enemies_y[i] += SPEED;
+
+    if (enemies_y[i] > canvas.height) {
+      enemies_y[i] = -img_enemy.height;
+      enemies_y[i] = Math.random() * (canvas.width - img_enemy.width);
+    }
   }
 };
 
@@ -36,6 +55,8 @@ let mainloop = function() {
   let startTime = new Date();
 
   movePlayer();
+
+  moveEnemies();
 
   redraw();
 
